@@ -43,61 +43,161 @@ class MinHeap:
         """
         TODO: Write this implementation
         """
-        pass
+        self._heap.append(node)
+        curr_index = self._heap.length() - 1
+
+        while curr_index > 0:
+            parent_index = (curr_index - 1)//2
+            parent_val = self._heap.get_at_index(parent_index)
+
+            if parent_val > self._heap.get_at_index(curr_index):
+                self._heap.set_at_index(parent_index, self._heap.get_at_index(curr_index))
+                self._heap.set_at_index(curr_index, parent_val)
+                curr_index = parent_index
+            else:
+                return
+
+
+
+
+
+
+
 
     def is_empty(self) -> bool:
         """
         TODO: Write this implementation
         """
-        pass
+        return self._heap.length() == 0
+
+
 
     def get_min(self) -> object:
         """
         TODO: Write this implementation
         """
-        pass
+        if self._heap.length() == 0:
+            return None
+        min = self._heap.get_at_index(0)
+        return min
 
     def remove_min(self) -> object:
         """
         TODO: Write this implementation
         """
-        pass
+        if self._heap.length() == 0:
+            raise MinHeapException("MinHeap is empty")
+
+        parent = 0
+
+        root_value = self._heap.get_at_index(0)
+        last_value = self._heap.get_at_index(self._heap.length() - 1)
+        self._heap.set_at_index(parent, last_value)
+        self._heap.remove_at_index(self._heap.length() - 1)
+
+        _percolate_down(self._heap, 0, self._heap.length())
+
+        return root_value
+
+
+
 
     def build_heap(self, da: DynamicArray) -> None:
         """
         TODO: Write this implementation
         """
-        pass
+        self._heap = DynamicArray(da)
+        last_index = self._heap.length() - 1
+        first_parent = (last_index - 1) // 2
+        for i in range(first_parent, -1, -1):
+            _percolate_down(self._heap, i, last_index + 1)
 
     def size(self) -> int:
         """
-        TODO: Write this implementation
+        returns the size of the MinHeap
         """
-        pass
+        return self._heap.length()
 
     def clear(self) -> None:
         """
-        TODO: Write this implementation
+        clears the heap by setting it to a new dynamic array
         """
-        pass
+        self._heap = DynamicArray()
 
 
 def heapsort(da: DynamicArray) -> None:
     """
     TODO: Write this implementation
     """
-    pass
+    last_index = da.length() - 1
+    first_parent = (last_index - 1) // 2
+    for i in range(first_parent, -1, -1):
+        _percolate_down(da, i, last_index + 1)
+
+
+    heap = da
+    k = heap.length() - 1
+
+
+    while k >= 0:
+        k_val = heap.get_at_index(k)
+        min_val = heap.get_at_index(0)
+        heap.set_at_index(k, min_val)
+        heap.set_at_index(0, k_val)
+
+
+        _percolate_down(heap, 0, k)
+        k -= 1
+
+
+
 
 
 # It's highly recommended that you implement the following optional          #
 # helper function for percolating elements down the MinHeap. You can call    #
 # this from inside the MinHeap class. You may edit the function definition.  #
 
-def _percolate_down(da: DynamicArray, parent: int) -> None:
+def _percolate_down(da: DynamicArray, parent: int, k:int) -> None:
     """
     TODO: Write your implementation
     """
-    pass
+    heap = da
+    parent = parent
+
+    #calculate index for left and right children for first given parent
+    left_index = (2 * parent) + 1
+    right_index = (2 * parent) + 2
+
+    #while given parent has at least one child
+    while left_index < k:
+
+        #set smaller_val_index to left because if one child it would be left
+        smaller_val_index = left_index
+
+        #check if it has right child and compare right left values
+        if right_index < k and heap.get_at_index(right_index) < heap.get_at_index(smaller_val_index):
+            smaller_val_index = right_index
+
+
+        #if parent val is greater than child val swap places in da
+        if heap.get_at_index(smaller_val_index) < heap.get_at_index(parent):
+
+            smaller_val = heap.get_at_index(smaller_val_index)
+            heap.set_at_index(smaller_val_index, heap.get_at_index(parent))
+            heap.set_at_index(parent, smaller_val)
+
+            #update/recalc vals for parent, left, and right indices
+            parent = smaller_val_index
+            left_index = (2 * parent) + 1
+            right_index = (2 * parent) + 2
+        else:
+
+            #no changes need to be made if parent is less than child val
+            return
+
+
+
+
 
 
 # ------------------- BASIC TESTING -----------------------------------------
