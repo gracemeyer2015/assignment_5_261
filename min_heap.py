@@ -1,9 +1,10 @@
-# Name:
-# OSU Email:
+# Name: Grace Meyer
+# OSU Email: meyerg3@oregonstate.edu
 # Course: CS261 - Data Structures
-# Assignment:
-# Due Date:
-# Description:
+# Assignment: 5
+# Due Date: 05/27/2025
+# Description: Minheap built on a dynamic_array that uses index calculations to identify parent child relationships with methods
+# add, remove_min both (amortized O(log n)), is_empty, get_min, clear, size all O(1), build_heap O(n), and heap_sort O(N log N)
 
 
 from dynamic_array import *
@@ -41,11 +42,14 @@ class MinHeap:
 
     def add(self, node: object) -> None:
         """
-        TODO: Write this implementation
+        adds a node/value to the MinHeap at the correct position by comparing child and parent vals
+
+        :param node: object to be added to the MinHeap
         """
         self._heap.append(node)
         curr_index = self._heap.length() - 1
 
+        #move value from end of da to desired position by comparing current to parent
         while curr_index > 0:
             parent_index = (curr_index - 1)//2
             parent_val = self._heap.get_at_index(parent_index)
@@ -66,7 +70,9 @@ class MinHeap:
 
     def is_empty(self) -> bool:
         """
-        TODO: Write this implementation
+        calls length on the stored heap/da to see if it is 0, returns bool
+
+        :return: bool
         """
         return self._heap.length() == 0
 
@@ -74,27 +80,33 @@ class MinHeap:
 
     def get_min(self) -> object:
         """
-        TODO: Write this implementation
+        returns the minimum value in the MinHeap val at index 0
+
+        :return: object, val at index 0
         """
         if self._heap.length() == 0:
-            return None
+            raise MinHeapException("Cannot get min from empty MinHeap")
         min = self._heap.get_at_index(0)
         return min
 
     def remove_min(self) -> object:
         """
-        TODO: Write this implementation
+        swaps last val and first val removes last val of array restructures array by calling percolate down
+
+        :return: object, val originally at index 0
         """
         if self._heap.length() == 0:
             raise MinHeapException("MinHeap is empty")
 
         parent = 0
 
+        #store and swap first and last values of the array + remove min val
         root_value = self._heap.get_at_index(0)
         last_value = self._heap.get_at_index(self._heap.length() - 1)
         self._heap.set_at_index(parent, last_value)
         self._heap.remove_at_index(self._heap.length() - 1)
 
+        #reconfigures min heap after a value has been removed by percolating highest value from top 0 to bottom last_index
         _percolate_down(self._heap, 0, self._heap.length())
 
         return root_value
@@ -104,11 +116,15 @@ class MinHeap:
 
     def build_heap(self, da: DynamicArray) -> None:
         """
-        TODO: Write this implementation
+        calls percolate down on all subtrees with children to sort values from the bottom up
+        to reduce time complexity creates min heap
+
+        :param da: DynamicArray to be modified in place into a min heap
         """
         self._heap = DynamicArray(da)
         last_index = self._heap.length() - 1
         first_parent = (last_index - 1) // 2
+        #calls percolate down from first_parent down to last parent root 0 to organize da into min heap
         for i in range(first_parent, -1, -1):
             _percolate_down(self._heap, i, last_index + 1)
 
@@ -127,7 +143,10 @@ class MinHeap:
 
 def heapsort(da: DynamicArray) -> None:
     """
-    TODO: Write this implementation
+    builds heap, swaps val index k and val index 0, calls percolate down with on elements 0 to k and repeats
+    until array is sorted in descending order
+
+    :param da: DynamicArray to be modified in place into sorted da
     """
     last_index = da.length() - 1
     first_parent = (last_index - 1) // 2
@@ -159,7 +178,12 @@ def heapsort(da: DynamicArray) -> None:
 
 def _percolate_down(da: DynamicArray, parent: int, k:int) -> None:
     """
-    TODO: Write your implementation
+    restructures the dynamic array to fit the requirements of a minheap from parent to k
+
+    :param da: DynamicArray to be sorted from parent down
+    :param parent: index of the parent to sort from
+    :param k: index of where to stop sort for heapsort
+
     """
     heap = da
     parent = parent
@@ -171,7 +195,7 @@ def _percolate_down(da: DynamicArray, parent: int, k:int) -> None:
     #while given parent has at least one child
     while left_index < k:
 
-        #set smaller_val_index to left because if one child it would be left
+
         smaller_val_index = left_index
 
         #check if it has right child and compare right left values
@@ -194,7 +218,6 @@ def _percolate_down(da: DynamicArray, parent: int, k:int) -> None:
 
             #no changes need to be made if parent is less than child val
             return
-
 
 
 
